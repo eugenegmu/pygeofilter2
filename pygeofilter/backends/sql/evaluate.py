@@ -64,8 +64,8 @@ SPATIAL_COMPARISON_OP_MAP = {
 
 TEMPORAL_COMPARISON_OP_MAP = {
     ast.TemporalComparisonOp.DISJOINT: 'DISJOINT',
-    ast.TemporalComparisonOp.AFTER: 'AFTER',
-    ast.TemporalComparisonOp.BEFORE: 'BEFORE',
+    ast.TemporalComparisonOp.AFTER: '>',
+    ast.TemporalComparisonOp.BEFORE: '<',
     ast.TemporalComparisonOp.BEGINS: 'BEGINS',
     ast.TemporalComparisonOp.BEGUNBY: 'BEGUNBY',
     ast.TemporalComparisonOp.TCONTAINS: 'TCONTAINS',
@@ -155,8 +155,11 @@ class SQLEvaluator(Evaluator):
 
     @handle(ast.Function)
     def function(self, node, *arguments):
-        func = self.function_map[node.name]
-        return f"{func}({','.join(arguments)})"
+        func = self.function_map[node.name
+        if (func.lower()=="to_timestamp"):
+            return  f"{func}(replace(replace('{argments[0]}', 'Z' ''), 'T', ' '), 'YYYY-MM-DD HH:MI:SS.MS)"
+        else:
+            return f"{func}({','.join(arguments)})"
 
     @handle(*values.LITERALS)
     def literal(self, node):
