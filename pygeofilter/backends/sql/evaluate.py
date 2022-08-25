@@ -157,7 +157,7 @@ class SQLEvaluator(Evaluator):
     def function(self, node, *arguments):
         func = self.function_map[node.name]
         if (func.lower()=="to_timestamp"):
-            return  f"{func}(replace(replace('{arguments[0]}', 'Z', ''), 'T', ' '), 'YYYY-MM-DD HH:MI:SS.MS')"
+            return  f"{func}(replace(replace({arguments[0]}, 'Z', ''), 'T', ' '), 'YYYY-MM-DD HH:MI:SS.MS')"
         else:
             return f"{func}({','.join(arguments)})"
 
