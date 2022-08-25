@@ -62,6 +62,42 @@ SPATIAL_COMPARISON_OP_MAP = {
     ast.SpatialComparisonOp.EQUALS: 'ST_Equals',
 }
 
+    DISJOINT = 'DISJOINT'
+    AFTER = 'AFTER'
+    BEFORE = 'BEFORE'
+    BEGINS = 'BEGINS'
+    BEGUNBY = 'BEGUNBY'
+    TCONTAINS = 'TCONTAINS'
+    DURING = 'DURING'
+    ENDEDBY = 'ENDEDBY'
+    ENDS = 'ENDS'
+    TEQUALS = 'TEQUALS'
+    MEETS = 'MEETS'
+    METBY = 'METBY'
+    TOVERLAPS = 'TOVERLAPS'
+    OVERLAPPEDBY = 'OVERLAPPEDBY'
+
+    BEFORE_OR_DURING = 'BEFORE OR DURING'
+    DURING_OR_AFTER = 'DURING OR AFTER'
+
+TEMPORAL_COMPARISON_OP_MAP = {
+    ast.TemporalComparisonOp.DISJOINT: 'DISJOINT',
+    ast.TemporalComparisonOp.AFTER: 'AFTER',
+    ast.TemporalComparisonOp.BEFORE: 'BEFORE',
+    ast.TemporalComparisonOp.BEGINS: 'BEGINS',
+    ast.TemporalComparisonOp.BEGUNBY: 'BEGUNBY',
+    ast.TemporalComparisonOp.TCONTAINS: 'TCONTAINS',
+    ast.TemporalComparisonOp.DURING: 'DURING',
+    ast.TemporalComparisonOp.ENDEDBY: 'ENDEDBY',
+    ast.TemporalComparisonOp.ENDS: 'ENDS',
+    ast.TemporalComparisonOp.TEQUALS: 'TEQUALS',
+    ast.TemporalComparisonOp.MEETS: 'MEETS',
+    ast.TemporalComparisonOp.METBY: 'METBY',
+    ast.TemporalComparisonOp.TOVERLAPS: 'TOVERLAPS',
+    ast.TemporalComparisonOp.OVERLAPPEDBY: 'OVERLAPPEDBY',
+    ast.TemporalComparisonOp.OVERLAPPEDBY: 'BEFORE_OR_DURING',
+    ast.TemporalComparisonOp.OVERLAPPEDBY: 'DURING_OR_AFTER',
+}
 
 class SQLEvaluator(Evaluator):
     def __init__(self, attribute_map: Dict[str, str],
@@ -109,9 +145,9 @@ class SQLEvaluator(Evaluator):
     def null(self, node, lhs):
         return f"{lhs} IS {'NOT ' if node.not_ else ''}NULL"
 
-    # @handle(ast.TemporalPredicate, subclasses=True)
-    # def temporal(self, node, lhs, rhs):
-    #     pass
+    @handle(ast.TemporalPredicate, subclasses=True)
+    def temporal(self, node, lhs, rhs):
+        return f"({lhs} {TEMPORAL_COMPARISON_OP_MAP[node.op]} {rhs})"
 
     @handle(ast.SpatialComparisonPredicate, subclasses=True)
     def spatial_operation(self, node, lhs, rhs):
@@ -121,6 +157,7 @@ class SQLEvaluator(Evaluator):
     @handle(ast.BBox)
     def bbox(self, node, lhs):
         func = SPATIAL_COMPARISON_OP_MAP[ast.SpatialComparisonOp.INTERSECTS]
+        
         # TODO: create BBox geometry
         rhs = ""
         return f"{func}({lhs},{rhs})"
