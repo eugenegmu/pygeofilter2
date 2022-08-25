@@ -62,24 +62,6 @@ SPATIAL_COMPARISON_OP_MAP = {
     ast.SpatialComparisonOp.EQUALS: 'ST_Equals',
 }
 
-    DISJOINT = 'DISJOINT'
-    AFTER = 'AFTER'
-    BEFORE = 'BEFORE'
-    BEGINS = 'BEGINS'
-    BEGUNBY = 'BEGUNBY'
-    TCONTAINS = 'TCONTAINS'
-    DURING = 'DURING'
-    ENDEDBY = 'ENDEDBY'
-    ENDS = 'ENDS'
-    TEQUALS = 'TEQUALS'
-    MEETS = 'MEETS'
-    METBY = 'METBY'
-    TOVERLAPS = 'TOVERLAPS'
-    OVERLAPPEDBY = 'OVERLAPPEDBY'
-
-    BEFORE_OR_DURING = 'BEFORE OR DURING'
-    DURING_OR_AFTER = 'DURING OR AFTER'
-
 TEMPORAL_COMPARISON_OP_MAP = {
     ast.TemporalComparisonOp.DISJOINT: 'DISJOINT',
     ast.TemporalComparisonOp.AFTER: 'AFTER',
@@ -157,7 +139,7 @@ class SQLEvaluator(Evaluator):
     @handle(ast.BBox)
     def bbox(self, node, lhs):
         func = SPATIAL_COMPARISON_OP_MAP[ast.SpatialComparisonOp.INTERSECTS]
-        
+
         # TODO: create BBox geometry
         rhs = ""
         return f"{func}({lhs},{rhs})"
